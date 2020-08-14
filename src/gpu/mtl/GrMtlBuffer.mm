@@ -97,7 +97,9 @@ inline GrMtlGpu* GrMtlBuffer::mtlGpu() const {
 }
 
 void GrMtlBuffer::onAbandon() {
+    [fMtlBuffer setPurgeableState:MTLPurgeableStateEmpty];
     fMtlBuffer = nil;
+    [fMappedBuffer setPurgeableState:MTLPurgeableStateEmpty];
     fMappedBuffer = nil;
     fMapPtr = nullptr;
     VALIDATE();
@@ -107,7 +109,9 @@ void GrMtlBuffer::onAbandon() {
 void GrMtlBuffer::onRelease() {
     if (!this->wasDestroyed()) {
         VALIDATE();
+        [fMtlBuffer setPurgeableState:MTLPurgeableStateEmpty];
         fMtlBuffer = nil;
+        [fMappedBuffer setPurgeableState:MTLPurgeableStateEmpty];
         fMappedBuffer = nil;
         fMapPtr = nullptr;
         VALIDATE();
@@ -151,6 +155,7 @@ void GrMtlBuffer::internalUnmap(size_t sizeInBytes) {
     VALIDATE();
     SkASSERT(this->isMapped());
     if (fMtlBuffer == nil) {
+        [fMappedBuffer setPurgeableState:MTLPurgeableStateEmpty];
         fMappedBuffer = nil;
         fMapPtr = nullptr;
         return;

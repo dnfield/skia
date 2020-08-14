@@ -46,10 +46,12 @@ protected:
     GrMtlGpu* getMtlGpu() const;
 
     void onAbandon() override {
+        [fTexture setPurgeableState:MTLPurgeableStateEmpty];
         fTexture = nil;
         INHERITED::onAbandon();
     }
     void onRelease() override {
+        [fTexture setPurgeableState:MTLPurgeableStateEmpty];
         fTexture = nil;
         INHERITED::onRelease();
     }
